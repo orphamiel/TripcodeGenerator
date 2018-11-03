@@ -1,14 +1,14 @@
 
 # TripcodeGenerator
 
-Tripcode Generator was written in Javascript and HTML, and generates insecure tripcodes for Futaba-based imageboards. A copy of the project can be found live at [https://orph.link/tripgen
+Tripcode Generator was written in Javascript and HTML, and it generates insecure tripcodes for Futaba-based imageboards. A copy of the project can be found live at [https://orph.link/tripgen
 ](https://orph.link/tripgen)
 
 ### Performance
 
-Fast use workers and multithreading which may cause your browser to stop responding.
+Fast uses workers and multithreading which may cause your browser to stop responding.
 Medium uses only 1 worker (i.e. 1 thread).
-Slow use Jquery's setinterval.
+Slow uses Jquery's setinterval.
 
 The performance of Tripcode Generator should vary greatly and is dependent on multiple factors:
 * Browser's settings (many of which might throttle Jquery intervals if you're on the slow setting)
