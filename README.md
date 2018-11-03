@@ -7,13 +7,14 @@ Tripcode Generator was written in Javascript and HTML, and generates insecure tr
 ### Performance
 
 The performance of Tripcode Generator should vary greatly and is dependent on multiple factors:
-* Browser's settings (many of which might throttle Jquery intervals)
+* Browser's settings (many of which might throttle Jquery intervals if you're on the slow setting)
 * Processor speed
 * **Your luck** (tripcodes are generated in a random fashion)
 * Tripcode matching settings (Case insensitive and contains should be fastest)
 
 ### WARNING
-Choosing the "ends with" matching pattern might result in a situation where there are no matching tripcodes. **USE IT AT YOUR OWN RISK** 
+Choosing the "ends with" matching pattern might result in a situation where there are no matching tripcodes. 
+**USE IT AT YOUR OWN RISK** 
 
 # Acknowledgement
 
