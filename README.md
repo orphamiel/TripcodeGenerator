@@ -6,7 +6,9 @@ Tripcode Generator was written in Javascript and HTML, and generates insecure tr
 
 ### Performance
 
-The fast settings use workers which should be a lot faster but more CPU intensive while the slow settings use Jquery's setinterval.
+Fast use workers and multithreading which may cause your browser to stop respodning.
+Medium uses only 1 worker (i.e. 1 thread).
+Slow use Jquery's setinterval.
 
 The performance of Tripcode Generator should vary greatly and is dependent on multiple factors:
 * Browser's settings (many of which might throttle Jquery intervals if you're on the slow setting)

@@ -1,5 +1,6 @@
 var stopped = true;
 var wArr = [];
+var w;
 var speed = "";
 
 function run(){
@@ -7,7 +8,7 @@ function run(){
 	if(stopped){
 		speed = selectedRadio("speed");
 		//console.log("Starting " + speed);
-		if(speed==="fast"){
+		if(speed==="fast" || speed==="medium"){
 			stopped = false;
 			document.getElementById("elapsed").textContent = "Elapsed time: 0 seconds";
 			//reset table - need to add classes to this later
@@ -26,22 +27,35 @@ function run(){
 				document.getElementById("elapsed").textContent = "Elapsed time: " + startTime++ + " seconds";
 			}, 1000);
 			//worker
-			var cores = window.navigator.hardwareConcurrency;
-			if (cores===null){
-				cores = 4;
+			if(speed==="fast"){
+				var cores = window.navigator.hardwareConcurrency;
+				if (cores===null){
+					cores = 4;
+				}
+				for (var i = 0; i < cores; i++) {
+					var t = new Worker("scripts/tripworker.min.js");
+					t.postMessage({"wanted":wanted, "case":caseOptions, "match":matchOptions});
+					t.onmessage = function(e) {
+						var rand = e.data['rand'];
+						var cipher = e.data['cipher'];
+						var startTime = e.data['startTime'];
+						updateTable(rand, cipher, startTime);
+					}
+					wArr.push(t);
+					//console.log("started thread " + i);
+				}
 			}
-			for (var i = 0; i < cores; i++) {
-				var t = new Worker("scripts/tripworker.min.js");
-				t.postMessage({"wanted":wanted, "case":caseOptions, "match":matchOptions});
-				t.onmessage = function(e) {
+			else{
+				w = new Worker("scripts/tripworker.min.js");
+				w.postMessage({"wanted":wanted, "case":caseOptions, "match":matchOptions});
+				w.onmessage = function(e) {
 					var rand = e.data['rand'];
 					var cipher = e.data['cipher'];
 					var startTime = e.data['startTime'];
 					updateTable(rand, cipher, startTime);
 				}
-				wArr.push(t);
-				//console.log("started thread " + i);
 			}
+
 		}
 		else{
 			document.getElementById("gen_button").value = "Stop!";
@@ -55,6 +69,12 @@ function run(){
 				wArr[i].terminate();
 				//console.log("stopped thread " + i);
 			}
+			stopped = true;
+			document.getElementById("elapsed").textContent = "Stopped.";
+			document.getElementById("gen_button").value = "Start!";
+		}
+		else if(speed==="medium"){
+			w.terminate();
 			stopped = true;
 			document.getElementById("elapsed").textContent = "Stopped.";
 			document.getElementById("gen_button").value = "Start!";

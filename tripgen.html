@@ -31,12 +31,12 @@
 			<label id="speed-label">Run speed: </label>
 			<input type="radio" name="speed" value="fast" checked="checked">
 			<label for="fast">Fast</label>
+			<input type="radio" name="speed" value="medium">
+			<label for="fast">Medium</label>
 			<input type="radio" name="speed" value="slow">
 			<label for="fast">Slow</label>
 		</div>
-		<br />
-		<h4>Warning: Ends with may not have any valid trips.</h4>
-		<br />
+		<h4>Warning: Ends with may not have any valid trips. Fast uses multithreading (which may bring your device to a standstill), medium uses only 1 thread. Slow uses Jquery's setinterval.</h4>
         <div id="elapsed">Elapsed time: </div>
         <br />
 		<table id="results-table">
