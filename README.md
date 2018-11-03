@@ -6,7 +6,7 @@ Tripcode Generator was written in Javascript and HTML, and generates insecure tr
 
 ### Performance
 
-Fast use workers and multithreading which may cause your browser to stop respodning.
+Fast use workers and multithreading which may cause your browser to stop responding.
 Medium uses only 1 worker (i.e. 1 thread).
 Slow use Jquery's setinterval.
 
