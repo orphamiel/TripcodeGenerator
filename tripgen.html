@@ -4,16 +4,12 @@
 		<link rel="icon" type="image/png" href="./images/favicon.png">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script type="text/javascript" src="./scripts/descryptlib.js"></script>
-		<script type="text/javascript" src="./scripts/tripgen.min.js"></script>		
+		<script type="text/javascript" src="./scripts/tripgen.min.js"></script>	
     </head>
     <body>
-		<script>
-			des_init();
-		</script>
 		<h1>Trip matches: </h1>
 		<input id="wanted" value=""></input>
-		<!--clicking twice issues-->
-		<input id="gen_button" type="button" value="Start!" onclick="genButton()">
+		<input id="gen_button" type="button" value="Start!" onclick="run()">
 		<br />
 		<div class="div-case-options">
 			<label id="case-label">Case Sensitivity: </label>
@@ -30,6 +26,13 @@
 			<label for="contains">Contains</label>
 			<input type="radio" name="match" value="ends">
 			<label for="ends">Ends with</label>
+		</div>
+		<div class="div-speed-options">
+			<label id="speed-label">Run speed: </label>
+			<input type="radio" name="speed" value="fast" checked="checked">
+			<label for="fast">Fast</label>
+			<input type="radio" name="speed" value="slow">
+			<label for="fast">Slow</label>
 		</div>
 		<br />
 		<h4>Warning: Ends with may not have any valid trips.</h4>

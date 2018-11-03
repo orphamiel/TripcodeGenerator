@@ -1,13 +1,57 @@
-var stopped = true;            
+var stopped = true;
+var w;
+var speed = "";
 
-function genButton(){
+function run(){
+	//todo verify that browser supports worker
 	if(stopped){
-		document.getElementById("gen_button").value = "Stop!";
-		startGen();
+		speed = selectedRadio("speed");
+		console.log("Starting " + speed);
+		if(speed==="fast"){
+			stopped = false;
+			document.getElementById("elapsed").textContent = "Elapsed time: 0 seconds";
+			//reset table - need to add classes to this later
+			document.getElementById("results-table").innerHTML = "<tr id='result-header'><th>Text</th><th>Tripcode</th><th>Time taken</th></tr>"
+			document.getElementById("gen_button").value = "Stop!";
+			var wanted = document.getElementById("wanted").value;
+			var caseOptions = selectedRadio("case");
+			var matchOptions = selectedRadio("match");
+			//timer
+			var startTime = 0;
+			var timeInterval = setInterval(function() {
+				if (stopped){
+					clearInterval(timeInterval);
+					return;
+				}
+				document.getElementById("elapsed").textContent = "Elapsed time: " + startTime++ + " seconds";
+			}, 1000);
+			//worker
+			w = new Worker("scripts/tripworker.min.js");
+			w.postMessage({"wanted":wanted, "case":caseOptions, "match":matchOptions});
+			w.onmessage = function(e) {
+				var rand = e.data['rand'];
+				var cipher = e.data['cipher'];
+				var startTime = e.data['startTime'];
+				updateTable(rand, cipher, startTime);
+			}
+		}
+		else{
+			document.getElementById("gen_button").value = "Stop!";
+			startGen();
+		}
 	}
 	else{
-		document.getElementById("gen_button").value = "Start!";
-		stopGen();
+		console.log("Stopping " + speed);
+		if(speed==="fast"){
+			w.terminate();
+			stopped = true;
+			document.getElementById("elapsed").textContent = "Stopped.";
+			document.getElementById("gen_button").value = "Start!";
+		}
+		else{
+			document.getElementById("gen_button").value = "Start!";
+			stopGen();
+		}
 	}
 }
 
@@ -16,8 +60,8 @@ function stopGen(){
 	document.getElementById("elapsed").textContent = "Stopped.";
 }
 
-//use promises
 function startGen(){
+	des_init();
 	stopped = false;
 	//reset timer
 	document.getElementById("elapsed").textContent = "Elapsed time: 0 seconds";
@@ -42,32 +86,36 @@ function startGen(){
 			clearInterval(genInterval);
 			return;
 		}
-		var rand = generateRandom();
-		var cipher = makeTrip(rand);
-		var cipherCheck = cipher;
-		//case matching
-		if(caseOptions==="ignore"){
-			cipherCheck = cipher.toLowerCase();
-			wanted = wanted.toLowerCase();
-		}
-		//pattern matching
-		if(matchOptions==="starts"){
-			if(cipherCheck.startsWith(wanted)){
-				updateTable(rand, cipher, startTime);
-			}
-		}
-		else if(matchOptions==="contains"){
-			if(cipherCheck.indexOf(wanted) !== -1){
-				updateTable(rand, cipher, startTime);
-			}
-		}
-		//ends with has a curious effect where there may not be any valid trips
-		else{
-			if(cipherCheck.endsWith(wanted)){
-				updateTable(rand, cipher, startTime);
-			}
-		}
+		genTrip(wanted, startTime, caseOptions, matchOptions);
 	}, 0);
+}
+
+function genTrip(wanted, startTime, caseOptions, matchOptions){
+	var rand = generateRandom();
+	var cipher = makeTrip(rand);
+	var cipherCheck = cipher;
+	//case matching
+	if(caseOptions==="ignore"){
+		cipherCheck = cipher.toLowerCase();
+		wanted = wanted.toLowerCase();
+	}
+	//pattern matching
+	if(matchOptions==="starts"){
+		if(cipherCheck.startsWith(wanted)){
+			updateTable(rand, cipher, startTime);
+		}
+	}
+	else if(matchOptions==="contains"){
+		if(cipherCheck.indexOf(wanted) !== -1){
+			updateTable(rand, cipher, startTime);
+		}
+	}
+	//ends with has a curious effect where there may not be any valid trips
+	else{
+		if(cipherCheck.endsWith(wanted)){
+			updateTable(rand, cipher, startTime);
+		}
+	}
 }
 
 function updateTable(rand, cipher, startTime){
