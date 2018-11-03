@@ -1,4 +1,4 @@
-importScripts('descryptlib.js', 'tripgen.js');
+importScripts('descryptlib.js', 'tripgen.min.js');
 
 function work_trip(){
 	var wanted = "";
