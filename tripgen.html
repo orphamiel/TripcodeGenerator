@@ -1,0 +1,47 @@
+<html>
+    <head>
+		<title>Trip Generator</title>
+		<link rel="icon" type="image/png" href="./images/favicon.png">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script type="text/javascript" src="./scripts/descryptlib.js"></script>
+		<script type="text/javascript" src="./scripts/tripgen.min.js"></script>		
+    </head>
+    <body>
+		<script>
+			des_init();
+		</script>
+		<h1>Trip matches: </h1>
+		<input id="wanted" value=""></input>
+		<!--clicking twice issues-->
+		<input id="gen_button" type="button" value="Start!" onclick="genButton()">
+		<br />
+		<div class="div-case-options">
+			<label id="case-label">Case Sensitivity: </label>
+			<input type="radio" name="case" value="sensitive" checked="checked">
+			<label for="sensitive">Case Sensitive</label>
+			<input type="radio" name="case" value="ignore">
+			<label for="ignore">Ignore Cases</label>
+		</div>
+		<div class="div-match-options">
+			<label id="match-label">Match: </label>
+			<input type="radio" name="match" value="starts" checked="checked">
+			<label for="starts">Starts with</label>
+			<input type="radio" name="match" value="contains">
+			<label for="contains">Contains</label>
+			<input type="radio" name="match" value="ends">
+			<label for="ends">Ends with</label>
+		</div>
+		<br />
+		<h4>Warning: Ends with may not have any valid trips.</h4>
+		<br />
+        <div id="elapsed">Elapsed time: </div>
+        <br />
+		<table id="results-table">
+			<tr id="result-header">
+				<th>Text</th>
+				<th>Tripcode</th>
+				<th>Time taken</th>
+			</tr>
+		</table>
+    </body>
+</html>
