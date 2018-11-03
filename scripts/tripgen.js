@@ -1,12 +1,12 @@
 var stopped = true;
-var w;
+var wArr = [];
 var speed = "";
 
 function run(){
 	//todo verify that browser supports worker
 	if(stopped){
 		speed = selectedRadio("speed");
-		console.log("Starting " + speed);
+		//console.log("Starting " + speed);
 		if(speed==="fast"){
 			stopped = false;
 			document.getElementById("elapsed").textContent = "Elapsed time: 0 seconds";
@@ -26,13 +26,21 @@ function run(){
 				document.getElementById("elapsed").textContent = "Elapsed time: " + startTime++ + " seconds";
 			}, 1000);
 			//worker
-			w = new Worker("scripts/tripworker.min.js");
-			w.postMessage({"wanted":wanted, "case":caseOptions, "match":matchOptions});
-			w.onmessage = function(e) {
-				var rand = e.data['rand'];
-				var cipher = e.data['cipher'];
-				var startTime = e.data['startTime'];
-				updateTable(rand, cipher, startTime);
+			var cores = window.navigator.hardwareConcurrency;
+			if (cores===null){
+				cores = 4;
+			}
+			for (var i = 0; i < cores; i++) {
+				var t = new Worker("scripts/tripworker.min.js");
+				t.postMessage({"wanted":wanted, "case":caseOptions, "match":matchOptions});
+				t.onmessage = function(e) {
+					var rand = e.data['rand'];
+					var cipher = e.data['cipher'];
+					var startTime = e.data['startTime'];
+					updateTable(rand, cipher, startTime);
+				}
+				wArr.push(t);
+				//console.log("started thread " + i);
 			}
 		}
 		else{
@@ -41,9 +49,12 @@ function run(){
 		}
 	}
 	else{
-		console.log("Stopping " + speed);
+		//console.log("Stopping " + speed);
 		if(speed==="fast"){
-			w.terminate();
+			for (var i = 0; i < wArr.length; i++) {
+				wArr[i].terminate();
+				//console.log("stopped thread " + i);
+			}
 			stopped = true;
 			document.getElementById("elapsed").textContent = "Stopped.";
 			document.getElementById("gen_button").value = "Start!";
